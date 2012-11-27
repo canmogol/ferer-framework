@@ -15,6 +15,7 @@ public abstract class AbstractXMLGenerator {
 	protected XStream xstream;
 
 	private Map<String, Object> dataMap;
+	private Map<String, Class> aliasMap;
 
 	private String xmlString = "";
 
@@ -56,4 +57,8 @@ public abstract class AbstractXMLGenerator {
 	public Map<String, Object> getDataMap() {
 		return dataMap;
 	}
+
+    public Map<String, Class> getAliasMap() {
+        return aliasMap;
+    }
 }
