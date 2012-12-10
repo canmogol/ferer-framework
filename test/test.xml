@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <requestParams>
+        <param>
+            <name>username</name>
+            <value>acm</value>
+        </param>
+        <param>
+            <name>password</name>
+            <value>123</value>
+        </param>
+        <param>
+            <name>URI</name>
+            <value>/haber/1/RTE/Ankara</value>
+        </param>
+        <param>
+            <name>cookie1</name>
+            <value>ASASDSADDL23423ASDAS</value>
+        </param>
+    </requestParams>
+    ..
+    ..
+    <uri>
+        <value>haber</value>
+        <value>1</value>
+        <value>RTE</value>
+        <value>ANKARA</value>
+    </uri>
+    ..
+    ..
+    <myVars>
+        <haberBaslik>Ankara</haberBaslik>
+    </myVars>
+</root>
+
+
+xpath -> "/root/uri[3]"
+?xpath? -> "/root/myVars/haberBaslik = /root/uri[3]"

@@ -70,7 +70,7 @@ public class JDOMAddRemoveElement {
 
 
             XMLOutputter outPutter = new XMLOutputter(Format.getPrettyFormat());
-            outPutter.output(document, System.out);
+            //outPutter.output(document, System.out);
         } catch (Exception e) {
             e.printStackTrace();
         }

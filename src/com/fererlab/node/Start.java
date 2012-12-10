@@ -3,7 +3,7 @@ package com.fererlab.node;
 /**
  * acm 11/27/12 9:58 PM
  */
-public class Start extends Node{
+public class Start extends Node {
 
     @Override
     public void execute() throws Exception {

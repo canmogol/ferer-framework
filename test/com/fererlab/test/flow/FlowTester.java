@@ -1,17 +1,43 @@
 package com.fererlab.test.flow;
 
+import com.fererlab.converter.NoFormatter;
 import com.fererlab.db.DatabaseConnection;
 import com.fererlab.db.DatabaseOperation;
 import com.fererlab.flow.FlowManager;
 import com.fererlab.node.*;
 import com.fererlab.validation.Validation;
+import org.jdom2.Document;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 /**
  * acm 11/27/12 9:24 PM
  */
 public class FlowTester {
+
+    private Document document;
+    private SAXBuilder builder;
+    private String xml = "" +
+            "<root>" +
+            " <http>" +
+            "   <method>post</method>" +
+            "   <uri>/login</uri>" +
+            "   <post>" +
+            "       <username>mitsubishi</username>" +
+            "       <password>123@!Sushi</password>" +
+            "   </post>" +
+            "   <headers>" +
+            "       <user-agent>Mozilla/5.0 (iPad; U; CPU OS 3_2_1 like Mac OS X; en-us) AppleWebKit/531.21.10 (KHTML, like Gecko) Mobile/7B405</user-agent>" +
+            "   </headers>" +
+            " </http>" +
+            " <user id='1'>" +
+            "   <username>mitsubishi</username>" +
+            " </user>" +
+            "</root>";
 
     public static void main(String[] args) {
         new FlowTester();
@@ -23,22 +49,54 @@ public class FlowTester {
 
     private void runTest() {
         try {
+            prepareForTest();
             flowTestNodes();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    private void prepareForTest() throws JDOMException, IOException {
+        builder = new SAXBuilder();
+        document = builder.build(new ByteArrayInputStream(xml.getBytes()));
+    }
+
     private void flowTestNodes() throws Exception {
-        //                                           [tx1|-[db]-|tx1]-(c)-(*)
-        //                                          /
-        //  Sample Flow =   *-(c)-(v)-[tx0|-[db]-|tx0]-<c>-(c)-(*)
+
+        // socket listen / HttpServlet -> HTTP parse key:value -> RequestParams -> param -> URI parse -> URI("/login")="flow43" -> flow manager (flow43)
+
+        //                                                         [tx1|-[db]-|tx1]-(c)-(*)     JDOM Document = dataMap
+        //                                                        /
+        // JDOM Document -> Flow =   *-(c)-(v)-[tx0|-[db]-|tx0]-<c>-(c)-(*)
+
+        // "/root/myVars/username = /root/POST[0]"
+        // "/root/myVars/password = /root/uri[0]"
 
         // *
         Start start = new Start();
 
         // (c)
-        Converter converter0 = new Converter();
+        Converter converter0 = new Converter(
+                document
+        );
+        /*
+        String                          ,  String                          , DateTimeToString{(...) -> (DD.MM.YYY)}
+        "/root/users/user/register_date", "/root/myVars/user/register_date", Regexp String Manipulator Formatter.class, "DD.MM.YYYY"
+         */
+        converter0.addConversion(
+                "/root/http/post/username",
+                "/root/user/username",
+                new NoFormatter(),
+                "${empty.success.message}",
+                "${conversion.error}"
+        );
+        converter0.addConversion(
+                "/root/http/post/password",
+                "/root/user/password",
+                new NoFormatter(),
+                "${empty.success.message}",
+                "${conversion.error}"
+        );
         start.addChild(converter0);
 
         // (v)
@@ -62,11 +120,11 @@ public class FlowTester {
                         "postgres",
                         "123456"
                 ),
-                new DatabaseOperation(
+                new DatabaseOperation(  // "/root/users"
                         "select_user_operation",
                         DatabaseOperation.SELECT,
                         "select * from user where username=:username and password=:password",
-                        Arrays.asList("username", "password"),
+                        Arrays.asList("/root/myVars/username", "/root/myVars/password"),
                         Arrays.asList("id", "name", "surname", "address", "phone", "username", "password", "register_date")
                 )
         );
@@ -81,7 +139,11 @@ public class FlowTester {
         transaction0End.addChild(choice0);
 
         //  (c)
-        Converter converter1 = new Converter();
+        Converter converter1 = new Converter(
+                document
+        );
+        // /root/select_user_operation||users/register_date    java.sql.datetime->DD.MM.YYYY    /root/select_user_operation||users/register_date_day
+        // /root/uri[0]  O->O  /root/myVars/username
         choice0.addChild(true, converter1);
 
         //  (*)
@@ -90,7 +152,7 @@ public class FlowTester {
 
         //  [tx|
         Transaction transaction1Begin = new Transaction(Transaction.BEGIN, "TRNX_OTHER_USER_SELECT");
-        choice0.addChild(true, transaction1Begin);
+        choice0.addChild(false, transaction1Begin);
 
         //  [db]
         Database database1 = new Database(
@@ -115,7 +177,9 @@ public class FlowTester {
         database1.addChild(transaction1End);
 
         //  (c)
-        Converter converter2 = new Converter();
+        Converter converter2 = new Converter(
+                document
+        );
         transaction1End.addChild(converter2);
 
         //  (*)
