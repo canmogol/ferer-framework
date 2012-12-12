@@ -12,7 +12,7 @@ import java.util.logging.Logger;
 /**
  * acm 11/27/12 9:41 PM
  */
-public class FlowManager {
+public class FlowExecutor {
 
     private Logger logger = Logger.getLogger(getClass().getName());
 

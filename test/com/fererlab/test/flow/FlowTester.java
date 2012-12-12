@@ -3,7 +3,7 @@ package com.fererlab.test.flow;
 import com.fererlab.converter.NoFormatter;
 import com.fererlab.db.DatabaseConnection;
 import com.fererlab.db.DatabaseOperation;
-import com.fererlab.flow.FlowManager;
+import com.fererlab.flow.FlowExecutor;
 import com.fererlab.node.*;
 import com.fererlab.validation.Validation;
 import org.jdom2.Document;
@@ -35,7 +35,7 @@ public class FlowTester {
             "   </headers>" +
             " </http>" +
             " <user id='1'>" +
-            "   <username>mitsubishi</username>" +
+            "   <username>aliosman</username>" +
             " </user>" +
             "</root>";
 
@@ -190,10 +190,10 @@ public class FlowTester {
         Tree tree = new Tree(start);
 
         // create flow manager and run flow
-        FlowManager flowManager = new FlowManager();
+        FlowExecutor flowExecutor = new FlowExecutor();
 
         // run flow through the tree
-        flowManager.runFlow(tree);
+        flowExecutor.runFlow(tree);
 
         // this is the end node
         Node node = tree.getCurrentNode();

@@ -55,7 +55,7 @@ class MyTask extends RecursiveTask<Integer> {
 
     @Override
     protected Integer compute() {
-        int wait = new Random().nextInt(5);
+        int wait = new Random().nextInt(10);
         wait = ((wait < 0 ? wait * -1 : wait) == 0 ? 1 : wait) + 10;
         System.out.println("[" + name + "][" + (Thread.currentThread().getName() + ":" + Thread.currentThread().getId() + "]  ") + "will wait: " + wait + " seconds, ");
         try {
