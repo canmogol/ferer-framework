@@ -26,7 +26,7 @@ public class ForkJoinTest {
     private void forkJoinTest1() {
         ForkJoinPool pool = new ForkJoinPool(32767);
 
-        List<MyTask> myTasks = new ArrayList<>();
+        List<MyTask> myTasks = new ArrayList<MyTask>();
         for (int i = 0; i < 20; i++) {
             MyTask myTask = new MyTask("" + i + (i < 10 ? " " : ""));
             myTasks.add(myTask);

@@ -6,9 +6,9 @@ import java.util.Map;
 /**
  * acm 11/27/12 10:16 PM
  */
-public class Choice extends Node{
+public class Choice extends Node {
 
-    private Map<Object, Node> conditionResultNodeMap = new HashMap<>();
+    private Map<Object, Node> conditionResultNodeMap = new HashMap<Object, Node>();
 
     public void addChild(Object conditionResult, Node node) {
         conditionResultNodeMap.put(conditionResult, node);

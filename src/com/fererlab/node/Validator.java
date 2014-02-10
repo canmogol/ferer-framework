@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class Validator extends Node {
 
-    private List<Validation> validations = new ArrayList<>();
+    private List<Validation> validations = new ArrayList<Validation>();
 
     public Validator(List<Validation> validations) {
         this.validations = validations;

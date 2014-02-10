@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class Validator {
 
-    private List<String> validations = new ArrayList<>();
+    private List<String> validations = new ArrayList<String>();
 
     public Validator() {
     }

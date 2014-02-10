@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class Converter extends Node {
 
-    private List<Conversion> conversions = new ArrayList<>();
+    private List<Conversion> conversions = new ArrayList<Conversion>();
     private final Document document;
 
     public Converter(Document document) {
@@ -40,7 +40,6 @@ public class Converter extends Node {
         for (Conversion conversion : conversions) {
 
 
-
             // XPath Query
             XPathExpression expr = XPathFactory.instance().compile(conversion.getSourcePath());
             Object result = expr.evaluate(document);
@@ -59,7 +58,6 @@ public class Converter extends Node {
 
             // do formatting, get destination value
             destinationValue = conversion.getFormatter().format(sourceValue);
-
 
 
             // XPath Query
@@ -95,7 +93,7 @@ public class Converter extends Node {
     private Element getDestinationElement(String destinationPath, String destinationValue) {
         //      /root/user/username
         //      "root", "user", "username"
-        ArrayList<String> destinationPathParts = new ArrayList<>();
+        ArrayList<String> destinationPathParts = new ArrayList<String>();
         destinationPathParts.addAll(Arrays.asList(destinationPath.split("/")));
         if (destinationPathParts.get(0).isEmpty()) {
             destinationPathParts.remove(0);// this is the empty element, just remove it

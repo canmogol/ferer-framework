@@ -9,7 +9,7 @@ import java.util.List;
 public abstract class Node {
 
     private Node parent;
-    private List<Node> children = new ArrayList<>();
+    private List<Node> children = new ArrayList<Node>();
 
     protected Node() {
     }
